@@ -17,7 +17,7 @@ async function fetchExternalData(url) {
         // This creates another SSRF vulnerability point 
 
         const response = await axios.get(url);
-
+ 
         return {
             success: true,
             data: response.data,
