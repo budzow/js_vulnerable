@@ -15,7 +15,11 @@ async function fetchExternalData(url) {
     try {
         // VULNERABLE: Direct use of user-provided URL without validation
         // This creates another SSRF vulnerability point
+
+        //False Positive detected on the next line
         const response = await axios.get(url); // Noncompliant - jssecurity:S5144
+        //False Positive detected on the previous line
+        
         return {
             success: true,
             data: response.data,
