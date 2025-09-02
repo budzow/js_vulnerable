@@ -1,5 +1,6 @@
 const axios = require('axios');
 const express = require('express');
+const { fetchExternalData, proxyRequest } = require('./utils');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,7 +26,7 @@ app.get('/example', async (req, res) => {
 app.post('/fetch-data', async (req, res) => {
     try {
         // VULNERABLE: Another SSRF example with POST body
-        const response = await axios.get(req.body.endpoint); // Noncompliant - jssecurity:S5144 - some changes to the branch in feature branch
+        const response = await axios.get(req.body.endpoint); // Noncompliant - jssecurity:S5144
         res.json({ 
             status: 'success', 
             data: response.data 
@@ -35,6 +36,22 @@ app.post('/fetch-data', async (req, res) => {
         res.status(500).json({ 
             status: 'error', 
             message: 'Failed to fetch data' 
+        });
+    }
+});
+
+// New vulnerable endpoint using utility function
+app.get('/proxy', async (req, res) => {
+    try {
+        // VULNERABLE: Uses utility function that creates SSRF vulnerability
+        // This creates a data flow from user input to vulnerable axios call in utils.js
+        const result = await fetchExternalData(req.query.target); // Data flow starts here
+        res.json(result);
+    } catch (err) {
+        console.error('Error in proxy endpoint:', err.message);
+        res.status(500).json({ 
+            status: 'error', 
+            message: 'Proxy request failed' 
         });
     }
 });
@@ -64,6 +81,7 @@ app.get('/', (req, res) => {
         endpoints: {
             '/example?url=<URL>': 'Vulnerable SSRF endpoint (GET)',
             '/fetch-data': 'Vulnerable SSRF endpoint (POST with JSON body: {"endpoint": "<URL>"})',
+            '/proxy?target=<URL>': 'Vulnerable SSRF endpoint using utility function (GET)',
             '/safe-example': 'Safe endpoint example',
             '/health': 'Health check'
         },
