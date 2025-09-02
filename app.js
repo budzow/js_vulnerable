@@ -25,7 +25,7 @@ app.get('/example', async (req, res) => {
 app.post('/fetch-data', async (req, res) => {
     try {
         // VULNERABLE: Another SSRF example with POST body
-        const response = await axios.get(req.body.endpoint); // Noncompliant - jssecurity:S5144
+        const response = await axios.get( req.body.endpoint); // Noncompliant - jssecurity:S5144
         res.json({ 
             status: 'success', 
             data: response.data 
