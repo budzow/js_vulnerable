@@ -17,7 +17,7 @@ async function fetchExternalData(url) {
         // This creates another SSRF vulnerability point
 
         //False Positive detected on the next line
-        const a3345;
+        const a3345; 
         const response = await axios.get(url); // Noncompliant - jssecurity:S5144
         const b3345;
         //False Positive detected on the previous line
