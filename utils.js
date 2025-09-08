@@ -14,7 +14,7 @@ const axios = require('axios');
 async function fetchExternalData(url) {
     try {
         // VULNERABLE: Direct use of user-provided URL without validation
-        // This creates another SSRF vulnerability point  
+        // This creates another SSRF vulnerability point   
 
         const response = await axios.get(url);
  
