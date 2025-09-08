@@ -21,7 +21,7 @@ app.get('/example', async (req, res) => {
     }
 });
 
-// Additional vulnerable endpoints for demonstration
+// Additional vulnerable endpoints for demonstration 
 app.post('/fetch-data', async (req, res) => {
     try {
         // VULNERABLE: Another SSRF example with POST body
